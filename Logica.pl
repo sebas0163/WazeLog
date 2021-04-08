@@ -1,36 +1,5 @@
-% Aristas del Grafo
-% Con la forma (Punto de salida, Punto de llegada)
-arco(tresRios, sanJose,8).
-arco(tresRios,pacayas,15).
-arco(sanJose,corralillo,22).
-arco(sanJose,cartago,20).
-arco(corralillo,musgoVerde,6).
-arco(corralillo,sanJose, 22).
-arco(musgoVerde,corralillo,6).
-arco(musgoVerde,cartago,10).
-arco(cartago,musgoVerde,10).
-arco(cartago,paraiso,10).
-arco(cartago,sanJose,20).
-arco(cartago,tresRios,8).
-arco(cartago,pacayas,13).
-arco(paraiso,cervantes,4).
-arco(paraiso,orosi,8).
-arco(paraiso,cachi,10).
-arco(orosi,paraiso,8).
-arco(orosi,cachi,12).
-arco(cachi,paraiso,10).
-arco(cachi, orosi, 12).
-arco(cachi,cervantes,7).
-arco(cachi,turrialba,40).
-arco(cervantes,cachi,7).
-arco(cerbantes,juanViñas,5).
-arco(cervantes,pacayas,8).
-arco(juanViñas,turrialba,4).
-arco(turrialba,pacayas,18).
-arco(turrialba,cachi,40).
-arco(pacayas,cervantes,8).
-arco(pacayas,cartago,13).
-arco(pacayas,tresRios,15).
+:-module(logica,[inversa/2,mejorRuta/2]).
+:-use_module(bdyg).
 
 % Función encargada de añadir elementos a una lista.
 % Forma: (lista inicial, elemento que se desea añadir, lista obtenida).
@@ -220,6 +189,5 @@ incr([s(V,D1,P)|Xs], Incr, [s(V,D2,P)|Ys]):-
 %reverse_1([X|Xs], As, Ys):-reverse_1(Xs, [X|As], Ys).
 
 e(X, Y, Z):-arco(X, Y, Z).
-e(X, Y, Z):-arco(Y, X, Z).
 
 
