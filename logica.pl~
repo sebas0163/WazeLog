@@ -31,10 +31,17 @@ arco(turrialba,cachi,40).
 arco(pacayas,cervantes,8).
 arco(pacayas,cartago,13).
 arco(pacayas,tresRios,15).
+
 % Función encargada de añadir elementos a una lista.
 % Forma: (lista inicial, elemento que se desea añadir, lista obtenida).
 concatenar([],Lista,Lista).
 concatenar([Head|Lista1],Lista2, [Head|Lista3]):-concatenar(Lista1,Lista2,Lista3).
+%  Función que retorna la inversa de una lista
+%  Sintaxis (Lista, inversa de la lista).
+inversa(Lista1,Lista2):-inversa(Lista1,Lista2,[]).
+inversa([],Lista,Lista).
+inversa([Head|Tail],Lista2,Nueva):- inversa(Tail, Lista2, [Head|Nueva]).
+
 %Función que toma el tiempo de viaje de la lista dada por el grafo
 %Sintaxis horaTransito(Lista de lugares, km, tiempo, presa)
 horaTransito([],Tiempo,Tiempo).
@@ -76,10 +83,31 @@ sumaKm([Head|Tail],Total):-kilometraje(Head,Km), sumaKm(Tail, Suma),Total is Sum
 acomodar([],Ruta,Ruta).
 acomodar(Dijkstra,Resultado):-ordenarLugares(Dijkstra,Lugares),sumaKm(Dijkstra,Km),sumarTiempo(Dijkstra, Tiempo),sumarPresa(Dijkstra,Presa),
     acomodar([],Resultado, [Lugares,Km, Tiempo,Presa]).
-% dijkstra(Vertex0, Ss) is true if Ss is a list of structures s(Vertex, Dist,
-%   Path) containing the shortest Path from Vertex0 to Vertex, the distance of
-%   the path being Dist.  The graph is defined by e/3.
-% e.g. dijkstra(penzance, Ss)
+
+quitar([],Lista,Lista).
+quitar([[_|Tail1]|Tail],Lista2):-quitar([],Lista2,[Tail1|Tail]).
+
+% Función que calcula el dijkstra por secciones, segun una lista de
+% lugares
+% Sintaxis(Lista de lugares en orden,lista con el Dijkstra para cada par
+% de ciudades).
+calcularRuta([_|[]],Resultado,Resultado).
+calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstra),
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1]).
+calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
+
+mejorRuta([],Ruta,Ruta).
+mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
+  inversa(Dijkstra1,Dijkstra),
+  acomodar(Dijkstra,Resultado),
+  mejorRuta([],Ruta,Resultado).
+
+
+% ======================Algoritmo de Dijkstra=========================
+%dijkstra(Vertex0, Ss) is true if Ss
+% is a list of structures s(Vertex, Dist, Path) containing the shortest
+% Path from Vertex0 to Vertex, the distance of the path being Dist. The
+% graph is defined by e/3. e.g. dijkstra(penzance, Ss)
 dijkstra(Vertex, Ss):-
   create(Vertex, [Vertex], Ds),
   dijkstra_1(Ds, [s(Vertex,0,[])], Ss).
@@ -181,7 +209,7 @@ incr([s(V,D1,P)|Xs], Incr, [s(V,D2,P)|Ys]):-
 %reverse_1([], As, As).
 %reverse_1([X|Xs], As, Ys):-reverse_1(Xs, [X|As], Ys).
 
-e(X, Y, Z):-dist(X, Y, Z).
-e(X, Y, Z):-dist(Y, X, Z).
+e(X, Y, Z):-arco(X, Y, Z).
+e(X, Y, Z):-arco(Y, X, Z).
 
 
