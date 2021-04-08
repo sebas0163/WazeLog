@@ -83,7 +83,9 @@ sumaKm([Head|Tail],Total):-kilometraje(Head,Km), sumaKm(Tail, Suma),Total is Sum
 acomodar([],Ruta,Ruta).
 acomodar(Dijkstra,Resultado):-ordenarLugares(Dijkstra,Lugares),sumaKm(Dijkstra,Km),sumarTiempo(Dijkstra, Tiempo),sumarPresa(Dijkstra,Presa),
     acomodar([],Resultado, [Lugares,Km, Tiempo,Presa]).
-
+% Función que elimina el primer elemento de la lista de lugares del
+% dijkstra
+% Sintaxis quitar(Dijkstra,Dijkstra sin el primer lugar)
 quitar([],Lista,Lista).
 quitar([[_|Tail1]|Tail],Lista2):-quitar([],Lista2,[Tail1|Tail]).
 
@@ -91,9 +93,12 @@ quitar([[_|Tail1]|Tail],Lista2):-quitar([],Lista2,[Tail1|Tail]).
 % lugares
 % Sintaxis(Lista de lugares en orden,lista con el Dijkstra para cada par
 % de ciudades).
-calcularRuta([_|[]],Resultado,Resultado).
+calcularRuta([_|[]],Resultado,Resultado,false).
+calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1,false):- camino(Head,Elem,Dijkstra1),
+  quitar(Dijkstra1,Dijkstra),
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstra),
-  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1]).
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
 
 mejorRuta([],Ruta,Ruta).

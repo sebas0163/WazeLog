@@ -101,6 +101,11 @@ calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstr
   calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
 
+% Función que toma una lista de lugares y calcula mejor ruta para
+% trnasitar, junto con su tiempo, km, y tiempo en presas
+% sintaxis(Lista de lugares ordenados, lista con cuatro elementos:
+% (lista de los lugares por visitar,km,tiempo total,tiempo en presa))
+
 mejorRuta([],Ruta,Ruta).
 mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
   inversa(Dijkstra1,Dijkstra),
