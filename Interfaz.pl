@@ -1,6 +1,6 @@
 :-use_module(bnf3).
 :-use_module(bdyg).
-
+:-use_module(logica).
 /*
  Función principal.
  Unifica todos los hechos y reglas definidos para permitir la comunicacion entre el usuario y el sistema
@@ -12,9 +12,15 @@ wazelog():-
     write("Cuál es su destino? \n"),
     oracion_valida(Lugardestino),
     write("perfecto \n"),
-    arco(Lugarsalida,Lugardestino,Tiempo),
-    write("El tiempo estimado de duración es: "),write(Tiempo),write(" horas \n"),
-    write("Perfecto, ¿Tiene algún destino intermedio? \n").
+    write("¿Desea agregar un destino intermedio?\n"),
+    read(Afirmacion),
+    intermedio(Intermedios,[],Afirmacion),
+    inversa([Lugardestino|Intermedios],Rutas1),
+    mejorRuta([Lugarsalida|Rutas1],Ruta),
+    write("Su ruta sería la siguiente: "),
+    respuestaLugares(Ruta),
+    respuestaTiempos(Ruta),
+    write("\n ¡Muchas gracias por usar WazeLog!").
 
 /*
 Descripcion: transforma un string en una lista de palabras.
@@ -75,3 +81,33 @@ verificador_de_lugaryciudad(Lista,Ciudad):-
   write("Podría indicarme ahora dónde se ubica este lugar?\n"),
   oracion_valida(Ciudad).
 
+%-------- Función que solicita los puntos intermedios del viaje----
+% Sintaxis(Lista con los lugares intermedios, lista
+% vacia,condicinal(si/no))
+intermedio([],Lista,Lista).
+intermedio(Lista,Lista1,no):-
+  write("entendido\n"),
+  intermedio([],Lista,Lista1).
+intermedio(Lista,Lista1,si):-
+  write("¿Cual es su destino intermedio?\n"),
+  oracion_valida(Lugar),
+  write("¿Algun otro destino intermedio que desee agregar?\n"),
+  read(Afirmacion),
+  intermedio(Lista,[Lugar|Lista1],Afirmacion).
+
+respuestaLugares([],0).
+respuestaLugares([Head|Tail],0):-
+  write(Head),
+  write(", "),
+  respuestaLugares(Tail,0).
+respuestaLugares([Head|_]):-
+  respuestaLugares(Head,0).
+
+respuestaTiempos([_|[Km|[Tiempo|[Presa|_]]]]):-
+  write("debe recorrer una distancia de "),
+  write(Km),
+  write(" km. \nEl tiempo estimado de viaje es de "),
+  write(Tiempo),
+  write(" minutos sin presa, con presa el tiempo estimado sería de "),
+  write(Presa),
+  write(" minutos").

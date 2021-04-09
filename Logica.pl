@@ -1,36 +1,5 @@
-% Aristas del Grafo
-% Con la forma (Punto de salida, Punto de llegada)
-arco(tresRios, sanJose,8).
-arco(tresRios,pacayas,15).
-arco(sanJose,corralillo,22).
-arco(sanJose,cartago,20).
-arco(corralillo,musgoVerde,6).
-arco(corralillo,sanJose, 22).
-arco(musgoVerde,corralillo,6).
-arco(musgoVerde,cartago,10).
-arco(cartago,musgoVerde,10).
-arco(cartago,paraiso,10).
-arco(cartago,sanJose,20).
-arco(cartago,tresRios,8).
-arco(cartago,pacayas,13).
-arco(paraiso,cervantes,4).
-arco(paraiso,orosi,8).
-arco(paraiso,cachi,10).
-arco(orosi,paraiso,8).
-arco(orosi,cachi,12).
-arco(cachi,paraiso,10).
-arco(cachi, orosi, 12).
-arco(cachi,cervantes,7).
-arco(cachi,turrialba,40).
-arco(cervantes,cachi,7).
-arco(cerbantes,juanViñas,5).
-arco(cervantes,pacayas,8).
-arco(juanViñas,turrialba,4).
-arco(turrialba,pacayas,18).
-arco(turrialba,cachi,40).
-arco(pacayas,cervantes,8).
-arco(pacayas,cartago,13).
-arco(pacayas,tresRios,15).
+:-module(logica,[inversa/2,mejorRuta/2]).
+:-use_module(bdyg).
 
 % Función encargada de añadir elementos a una lista.
 % Forma: (lista inicial, elemento que se desea añadir, lista obtenida).
@@ -101,6 +70,11 @@ calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstr
   calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
 
+% Función que toma una lista de lugares y calcula mejor ruta para
+% trnasitar, junto con su tiempo, km, y tiempo en presas
+% sintaxis(Lista de lugares ordenados, lista con cuatro elementos:
+% (lista de los lugares por visitar,km,tiempo total,tiempo en presa))
+
 mejorRuta([],Ruta,Ruta).
 mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
   inversa(Dijkstra1,Dijkstra),
@@ -129,15 +103,17 @@ dijkstra_1([D|Ds], Ss0, Ss):-
   incr(Ds3, Distance, Ds4),
   merge(Ds1, Ds4, Ds5),
   dijkstra_1(Ds5, Ss1, Ss).
-
-% path(Vertex0, Vertex, Path, Dist) is true if Path is the shortest path from
-%   Vertex0 to Vertex, and the length of the path is Dist. The graph is defined
-%   by e/3.
-% e.g. path(penzance, london, Path, Dist)
+% Funcion inicial del dijkstra la cual con el lugar inicial y el final
+% retorna la distancia y los puntos por los que se debe de pasar
+%e.g. path(penzance, london, Path, Dist)
 path(Vertex0, Vertex, Path, Dist):-
   dijkstra(Vertex0, Ss),
   member(s(Vertex,Dist,Path), Ss), !.
 
+% funcion la cual llama a path para poder obtener una lista que contiene
+% el camino que se debe seguir para llegar a un punto de inicio a uno
+% final y el kilometraje total
+% eg. camino(cartago, cachi,X).
 camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
 
 % create(Start, Path, Edges) is true if Edges is a list of structures s(Vertex,
@@ -203,18 +179,11 @@ incr([s(V,D1,P)|Xs], Incr, [s(V,D2,P)|Ys]):-
   D2 is D1 + Incr,
   incr(Xs, Incr, Ys).
 
-% member(X, Ys) is true if the element X is contained in the list Ys.
-%member(X, [X|_]).
-%member(X, [_|Ys]):-member(X, Ys).
 
-% reverse(Xs, Ys) is true if Ys is the result of reversing the order of the
-%   elements in the list Xs.
-%reverse(Xs, Ys):-reverse_1(Xs, [], Ys).
-
-%reverse_1([], As, As).
-%reverse_1([X|Xs], As, Ys):-reverse_1(Xs, [X|As], Ys).
-
+% funcion que revisa si el punto X y el punto Y estan en el arco y
+% obtiene la distancia Z del arco
+% e.g e(tres rios, san jose, X). retornaria la distancia entre tres rios
+% y san jose
 e(X, Y, Z):-arco(X, Y, Z).
-e(X, Y, Z):-arco(Y, X, Z).
 
 

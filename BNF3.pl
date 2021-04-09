@@ -3,7 +3,7 @@
  Descripcion: Predicado que verifica la estructura de la oracion segun
  la base de datos que se define.Retorna true si la estructura cumple con
  lo establecido.
-oracion(Lista con las palabras de la oracion,[])
+sintaxis: oracion(Lista con las palabras de la oracion,[])
 */
 oracion(S0,S):-sintagma_nominal(S0,S).
 oracion(S0,S):-sintagma_preposicional(S0,S).
@@ -116,6 +116,3 @@ enlace([por|S],S).
 enlace([desde|S],S).
 
 conjuncion([que|S],S).
-
-%oracion([yo,estoy,en,cartago],[]).
-%oracion(S,[]).

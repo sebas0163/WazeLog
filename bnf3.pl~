@@ -1,5 +1,10 @@
 :- module(oracion, [oracion/2]).
-%-------Predicado que verifica la estructura de la oracion-----------
+/*
+ Descripcion: Predicado que verifica la estructura de la oracion segun
+ la base de datos que se define.Retorna true si la estructura cumple con
+ lo establecido.
+sintaxis: oracion(Lista con las palabras de la oracion,[])
+*/
 oracion(S0,S):-sintagma_nominal(S0,S).
 oracion(S0,S):-sintagma_preposicional(S0,S).
 oracion(S0,S):-sintagma_verbal(S0,S).
@@ -10,13 +15,15 @@ oracion(S0,S):- verbo(S0,S1),conjuncion(S1,S2),sintagma_verbal(S2,S).
 oracion(S0,S):- verbo(S0,S1),conjuncion(S1,S2),sintagma_verbal(S2,S3),sintagma_preposicional(S3,S).
 oracion(S0,S):- pronombre(S0,S1),verbo(S1,S2),sintagma_verbal(S2,S).
 oracion(S0,S):- pronombre(S0,S1),verbo(S1,S2),sintagma_verbal(S2,S3),sintagma_preposicional(S3,S).
-%-----------------Predicados para BNF------------------
+/**/
 sintagma_nominal(S0,S):- ciudad(S0,S).
 sintagma_nominal(S0,S):- determinante(Tipo,S0,S1),lugar(Tipo,S1,S).
 sintagma_nominal(S0,S):- determinante(Tipo,S0,S1),nombre(Tipo,S1,S).
+/**/
 sintagma_verbal(S0,S):- verbo(S0,S).
 sintagma_verbal(S0,S):- verbo(S0,S1),sintagma_nominal(S1,S).
 sintagma_verbal(S0,S):- verbo(S0,S1),sintagma_preposicional(S1,S).
+/**/
 sintagma_preposicional(S0,S):-enlace(S0,S1),sintagma_nominal(S1,S).
 %-------------------Base de datos para BNF------------------
 determinante(masculino,[el|S],S).
