@@ -99,9 +99,13 @@ verificador_de_lugaryciudad(Lista,Ciudad):-
   write("Podría indicarme ahora dónde se ubica este lugar?\n"),
   oracion_valida(Ciudad).
 
-%-------- Función que solicita los puntos intermedios del viaje----
-% Sintaxis(Lista con los lugares intermedios, lista
-% vacia,condicinal(si/no))
+/*
+Descripción: funipon que solicita los lugares intermedios al usuario y
+los guarda en una lista.
+Sintaxis: intermedio(Lista con los lugares intermedios, Lista vacia,
+afirmcación(condicional que decide si se sigue solictando más lugares))
+Autor: Sebastián Moya
+*/
 intermedio([],Lista,Lista).
 intermedio(Lista,Lista1,no):-
   write("entendido\n"),
@@ -113,7 +117,11 @@ intermedio(Lista,Lista1,si):-
   write("¿Desea agregar algún otro destino intermedio?\nIndique si o no, por favor.\n"),
   read(Afirmacion),
   intermedio(Lista,[Lugar|Lista1],Afirmacion).
-
+/*
+Descripción: función que escribe en consola los lugares de la ruta
+Sintaxis: respuestaLugares(Lista con los lugares,0).
+Autor: Sebastián Moya
+*/
 respuestaLugares([],0).
 respuestaLugares([Head|Tail],0):-
   write(Head),
@@ -121,7 +129,12 @@ respuestaLugares([Head|Tail],0):-
   respuestaLugares(Tail,0).
 respuestaLugares([Head|_]):-
   respuestaLugares(Head,0).
-
+/*
+Descripción: Función que escribe en consola el tiempo, el kilometraje y
+el tiempo en presa del viaje.
+Sintaxis: respuestaTiempos(Lista resultado de la ruta)
+Autor: Sebastián Moya Monge.
+ */
 respuestaTiempos([_|[Km|[Tiempo|[Presa|_]]]]):-
   write("debe recorrer una distancia de "),
   write(Km),

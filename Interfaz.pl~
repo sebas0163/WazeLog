@@ -12,6 +12,7 @@ wazelog():-
     write("Cuál es su destino? \n"),
     oracion_valida(Lugardestino),
     write("perfecto \n"),
+    repeat,
     write("¿Desea agregar un destino intermedio?\nIndique si o no, por favor.\n"),
     read(Afirmacion),
     intermedio(Intermedios,[],Afirmacion),

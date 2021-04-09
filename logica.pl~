@@ -1,43 +1,15 @@
-% Aristas del Grafo
-% Con la forma (Punto de salida, Punto de llegada)
-arco(tresRios, sanJose,8).
-arco(tresRios,pacayas,15).
-arco(sanJose,corralillo,22).
-arco(sanJose,cartago,20).
-arco(corralillo,musgoVerde,6).
-arco(corralillo,sanJose, 22).
-arco(musgoVerde,corralillo,6).
-arco(musgoVerde,cartago,10).
-arco(cartago,musgoVerde,10).
-arco(cartago,paraiso,10).
-arco(cartago,sanJose,20).
-arco(cartago,tresRios,8).
-arco(cartago,pacayas,13).
-arco(paraiso,cervantes,4).
-arco(paraiso,orosi,8).
-arco(paraiso,cachi,10).
-arco(orosi,paraiso,8).
-arco(orosi,cachi,12).
-arco(cachi,paraiso,10).
-arco(cachi, orosi, 12).
-arco(cachi,cervantes,7).
-arco(cachi,turrialba,40).
-arco(cervantes,cachi,7).
-arco(cerbantes,juanViñas,5).
-arco(cervantes,pacayas,8).
-arco(juanViñas,turrialba,4).
-arco(turrialba,pacayas,18).
-arco(turrialba,cachi,40).
-arco(pacayas,cervantes,8).
-arco(pacayas,cartago,13).
-arco(pacayas,tresRios,15).
+:-module(logica,[inversa/2,mejorRuta/2]).
+:-use_module(bdyg).
 
-% Función encargada de añadir elementos a una lista.
-% Forma: (lista inicial, elemento que se desea añadir, lista obtenida).
+%Descripción: Función encargada de añadir elementos a una lista.
+%Sintaxis:(lista inicial, elemento que se desea añadir, lista
+% obtenida).
+% Autor:Sebastián Moya
 concatenar([],Lista,Lista).
 concatenar([Head|Lista1],Lista2, [Head|Lista3]):-concatenar(Lista1,Lista2,Lista3).
-%  Función que retorna la inversa de una lista
-%  Sintaxis (Lista, inversa de la lista).
+%Descripción: Función que retorna la inversa de una lista
+%Sintaxis: (Lista, inversa de la lista).
+%% Autor:Sebastián Moya
 inversa(Lista1,Lista2):-inversa(Lista1,Lista2,[]).
 inversa([],Lista,Lista).
 inversa([Head|Tail],Lista2,Nueva):- inversa(Tail, Lista2, [Head|Nueva]).
@@ -51,50 +23,72 @@ horaTransito([_|[Hora|_]],Tiempo):-horaTransito([],Tiempo,Hora).
 % Sintaxis horaTransito(Lista de lugares, km, tiempo, presa)
 horaPresa([],Hora,Hora).
 horaPresa([_|[Hora|_]],Presa):-horaPresa([],Presa,Presa1), Presa1 is Hora*2.
-% Función que toma el kilometraje de cada Dijkstra.
+%Descripción: Función que toma el kilometraje de cada Dijkstra.
 % Sintaxis kilometraje(Lista con la ruta más cercana, Km)
+% Autor:Sebastián Moya
 kilometraje([],Km,Km).
 kilometraje([_|[Km|_]],Result):- kilometraje([],Result,Km).
-% Función que suma el tiempo normal en carretera por cada Dijkstra
-% sintaxis sumarTiempo(Lista de rutas Dijkstra, Suma del tiempo).
+% Descripción: Función que suma el tiempo normal en carretera por cada
+% Dijkstra
+% Sintaxis: sumarTiempo(Lista de rutas Dijkstra, Suma del
+% tiempo).
+% % Autor:Sebastián Moya
 sumarTiempo([],0).
 sumarTiempo([Head|Tail],Suma):-horaTransito(Head,Tiempo), sumarTiempo(Tail,Result), Suma is Result + Tiempo.
-% Función que suma el tiempo en presa en carretera por cada Dijkstra
-% sintaxis sumarPresa(Lista de rutas Dijkstra, Suma del tiempo).
+% Descripción: Función que suma el tiempo en presa en carretera por cada
+% Dijkstra
+% sintaxis: sumarPresa(Lista de rutas Dijkstra, Suma del tiempo).
+% Autor:Sebastián Moya
 sumarPresa([],0).
 sumarPresa([Head|Tail],Suma):-horaPresa(Head,Tiempo), sumarPresa(Tail,Result), Suma is Result + Tiempo.
 
-% Función que toma cada lugar obtenido por el Dijkstra y lo transforma
-% en una lista
+% Descripción: Función que toma cada lugar obtenido por el Dijkstra y lo
+% transforma en una lista
 % Sintaxis ordenarLugares(resultado del dijkstra, Lista de lugares).
+% Autor:Sebastián Moya
 ordenarLugares([],Lista,Lista).
 ordenarLugares([[Head|_]|Tail],Lugares,Lista):-concatenar(Lista,Head,Total),ordenarLugares(Tail,Lugares,Total).
 ordenarLugares(Dijkstra,Lugares):-ordenarLugares(Dijkstra, Lugares,[]).
 
-%Función que suma el kilometraje de cada Dijkstra
-% Sintaxis sumaKm(resultado de los dijkstra, Kilometraje total de la
+% Descripción: Función que suma el kilometraje de cada Dijkstra
+% Sintaxis: sumaKm(resultado de los dijkstra, Kilometraje total de la
 % ruta)
+% Autor:Sebastián Moya
 sumaKm([],0).
 sumaKm([Head|Tail],Total):-kilometraje(Head,Km), sumaKm(Tail, Suma),Total is Suma + Km.
 
-% Función encargada de acomodar los elementos del dijkstra, realizar las
-% sumas de los tiempos y kilometros
-% Sintaxis acomodar(Resultado del Dijkstra, Lista ordenada).
+% Descripción: Función encargada de acomodar los elementos del dijkstra,
+% realizar las sumas de los tiempos y kilometros.
+% Sintaxis: acomodar(Resultado del Dijkstra, Lista ordenada).
+% Autor:Sebastián Moya
 acomodar([],Ruta,Ruta).
 acomodar(Dijkstra,Resultado):-ordenarLugares(Dijkstra,Lugares),sumaKm(Dijkstra,Km),sumarTiempo(Dijkstra, Tiempo),sumarPresa(Dijkstra,Presa),
     acomodar([],Resultado, [Lugares,Km, Tiempo,Presa]).
-
+% Descripción: Función que elimina el primer elemento de la lista de
+% lugares del dijkstra
+% Sintaxis quitar(Dijkstra,Dijkstra sin el primer lugar)
+% Autor:Sebastián Moya
 quitar([],Lista,Lista).
 quitar([[_|Tail1]|Tail],Lista2):-quitar([],Lista2,[Tail1|Tail]).
 
-% Función que calcula el dijkstra por secciones, segun una lista de
-% lugares
+% Descripción: Función que calcula el dijkstra por secciones, segun una
+% lista de lugares
 % Sintaxis(Lista de lugares en orden,lista con el Dijkstra para cada par
 % de ciudades).
-calcularRuta([_|[]],Resultado,Resultado).
+% Autor:Sebastián Moya
+calcularRuta([_|[]],Resultado,Resultado,false).
+calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1,false):- camino(Head,Elem,Dijkstra1),
+  quitar(Dijkstra1,Dijkstra),
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstra),
-  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1]).
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
+
+% Descripción: Función que toma una lista de lugares y calcula mejor
+% ruta para trnasitar, junto con su tiempo, km, y tiempo en presas
+% sintaxis: (Lista de lugares ordenados, lista con cuatro elementos:
+% (lista de los lugares por visitar,km,tiempo total,tiempo en presa))
+% Autor:Sebastián Moya
 
 mejorRuta([],Ruta,Ruta).
 mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
@@ -104,6 +98,16 @@ mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
 
 
 % ======================Algoritmo de Dijkstra=========================
+% Este algoritmo fue basado en el código de Colin Barker de la pagina
+%http://colin.barker.pagesperso-orange.fr/lpa/dijkstra.htm
+
+% funcion la cual llama a path para poder obtener una lista que contiene
+% el camino que se debe seguir para llegar a un punto de inicio a uno
+% final y el kilometraje total
+% eg. camino(cartago, cachi,X).
+camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
+
+
 %dijkstra(Vertex0, Ss) is true if Ss
 % is a list of structures s(Vertex, Dist, Path) containing the shortest
 % Path from Vertex0 to Vertex, the distance of the path being Dist. The
@@ -125,15 +129,14 @@ dijkstra_1([D|Ds], Ss0, Ss):-
   merge(Ds1, Ds4, Ds5),
   dijkstra_1(Ds5, Ss1, Ss).
 
-% path(Vertex0, Vertex, Path, Dist) is true if Path is the shortest path from
-%   Vertex0 to Vertex, and the length of the path is Dist. The graph is defined
-%   by e/3.
-% e.g. path(penzance, london, Path, Dist)
+% Funcion inicial del dijkstra la cual con el lugar inicial y el final
+% retorna la distancia y los puntos por los que se debe de pasar
+%e.g. path(penzance, london, Path, Dist)
 path(Vertex0, Vertex, Path, Dist):-
   dijkstra(Vertex0, Ss),
   member(s(Vertex,Dist,Path), Ss), !.
 
-camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
+
 
 % create(Start, Path, Edges) is true if Edges is a list of structures s(Vertex,
 %   Distance, Path) containing, for each Vertex accessible from Start, the
@@ -198,18 +201,11 @@ incr([s(V,D1,P)|Xs], Incr, [s(V,D2,P)|Ys]):-
   D2 is D1 + Incr,
   incr(Xs, Incr, Ys).
 
-% member(X, Ys) is true if the element X is contained in the list Ys.
-%member(X, [X|_]).
-%member(X, [_|Ys]):-member(X, Ys).
 
-% reverse(Xs, Ys) is true if Ys is the result of reversing the order of the
-%   elements in the list Xs.
-%reverse(Xs, Ys):-reverse_1(Xs, [], Ys).
-
-%reverse_1([], As, As).
-%reverse_1([X|Xs], As, Ys):-reverse_1(Xs, [X|As], Ys).
-
+% funcion que revisa si el punto X y el punto Y estan en el arco y
+% obtiene la distancia Z del arco
+% e.g e(tres rios, san jose, X). retornaria la distancia entre tres rios
+% y san jose
 e(X, Y, Z):-arco(X, Y, Z).
-e(X, Y, Z):-arco(Y, X, Z).
 
 

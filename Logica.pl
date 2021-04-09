@@ -1,67 +1,102 @@
 :-module(logica,[inversa/2,mejorRuta/2]).
 :-use_module(bdyg).
 
-% Función encargada de añadir elementos a una lista.
-% Forma: (lista inicial, elemento que se desea añadir, lista obtenida).
+/*
+Descripción: Función encargada de añadir elementos a una lista.
+Sintaxis:(lista inicial, elemento que se desea añadir, lista
+obtenida).
+Autor:Sebastián Moya
+*/
 concatenar([],Lista,Lista).
 concatenar([Head|Lista1],Lista2, [Head|Lista3]):-concatenar(Lista1,Lista2,Lista3).
-%  Función que retorna la inversa de una lista
-%  Sintaxis (Lista, inversa de la lista).
+/*
+Descripción: Función que retorna la inversa de una lista
+Sintaxis: (Lista, inversa de la lista).
+Autor:Sebastián Moya*/
 inversa(Lista1,Lista2):-inversa(Lista1,Lista2,[]).
 inversa([],Lista,Lista).
 inversa([Head|Tail],Lista2,Nueva):- inversa(Tail, Lista2, [Head|Nueva]).
 
-%Función que toma el tiempo de viaje de la lista dada por el grafo
-%Sintaxis horaTransito(Lista de lugares, km, tiempo, presa)
+/*
+Descripción: Función que toma el tiempo de viaje de la lista dada por el grafo
+Sintaxis horaTransito(Lista de lugares, km, tiempo, presa)
+*/
 horaTransito([],Tiempo,Tiempo).
 horaTransito([_|[Hora|_]],Tiempo):-horaTransito([],Tiempo,Hora).
-% Función que toma el tiempo de viaje en presa de la lista dada por el
-% grafo
-% Sintaxis horaTransito(Lista de lugares, km, tiempo, presa)
+/*
+Descirpción: Función que toma el tiempo de viaje en presa de la lista
+dada por el grafo.
+Sintaxis: horaTransito(Lista de lugares, km, tiempo,
+presa)
+Autor:Sebastián Moya
+*/
 horaPresa([],Hora,Hora).
 horaPresa([_|[Hora|_]],Presa):-horaPresa([],Presa,Presa1), Presa1 is Hora*2.
-% Función que toma el kilometraje de cada Dijkstra.
-% Sintaxis kilometraje(Lista con la ruta más cercana, Km)
+/*
+Descripción: Función que toma el kilometraje de cada Dijkstra.
+Sintaxis kilometraje(Lista con la ruta más cercana, Km)
+Autor:Sebastián Moya
+*/
 kilometraje([],Km,Km).
 kilometraje([_|[Km|_]],Result):- kilometraje([],Result,Km).
-% Función que suma el tiempo normal en carretera por cada Dijkstra
-% sintaxis sumarTiempo(Lista de rutas Dijkstra, Suma del tiempo).
+/*
+Descripción: Función que suma el tiempo normal en carretera por cada
+Dijkstra
+Sintaxis: sumarTiempo(Lista de rutas Dijkstra, Suma del tiempo).
+Autor:Sebastián Moya
+*/
 sumarTiempo([],0).
 sumarTiempo([Head|Tail],Suma):-horaTransito(Head,Tiempo), sumarTiempo(Tail,Result), Suma is Result + Tiempo.
-% Función que suma el tiempo en presa en carretera por cada Dijkstra
-% sintaxis sumarPresa(Lista de rutas Dijkstra, Suma del tiempo).
+/*
+Descripción: Función que suma el tiempo en presa en carretera por cada
+Dijkstra
+sintaxis: sumarPresa(Lista de rutas Dijkstra, Suma del tiempo).
+Autor:Sebastián Moya
+*/
 sumarPresa([],0).
 sumarPresa([Head|Tail],Suma):-horaPresa(Head,Tiempo), sumarPresa(Tail,Result), Suma is Result + Tiempo.
 
-% Función que toma cada lugar obtenido por el Dijkstra y lo transforma
-% en una lista
-% Sintaxis ordenarLugares(resultado del dijkstra, Lista de lugares).
+/*
+Descripción: Función que toma cada lugar obtenido por el Dijkstra y lo
+transforma en una lista
+Sintaxis ordenarLugares(resultado del dijkstra, Lista de lugares).
+Autor:Sebastián Moya
+*/
 ordenarLugares([],Lista,Lista).
 ordenarLugares([[Head|_]|Tail],Lugares,Lista):-concatenar(Lista,Head,Total),ordenarLugares(Tail,Lugares,Total).
 ordenarLugares(Dijkstra,Lugares):-ordenarLugares(Dijkstra, Lugares,[]).
-
-%Función que suma el kilometraje de cada Dijkstra
-% Sintaxis sumaKm(resultado de los dijkstra, Kilometraje total de la
-% ruta)
+/*
+Descripción: Función que suma el kilometraje de cada Dijkstra
+Sintaxis: sumaKm(resultado de los dijkstra, Kilometraje total de la
+ruta)
+Autor:Sebastián Moya
+*/
 sumaKm([],0).
 sumaKm([Head|Tail],Total):-kilometraje(Head,Km), sumaKm(Tail, Suma),Total is Suma + Km.
-
-% Función encargada de acomodar los elementos del dijkstra, realizar las
-% sumas de los tiempos y kilometros
-% Sintaxis acomodar(Resultado del Dijkstra, Lista ordenada).
+/*
+Descripción: Función encargada de acomodar los elementos del dijkstra,
+realizar las sumas de los tiempos y kilometros.
+Sintaxis: acomodar(Resultado del Dijkstra, Lista ordenada).
+Autor:Sebastián Moya
+*/
 acomodar([],Ruta,Ruta).
 acomodar(Dijkstra,Resultado):-ordenarLugares(Dijkstra,Lugares),sumaKm(Dijkstra,Km),sumarTiempo(Dijkstra, Tiempo),sumarPresa(Dijkstra,Presa),
     acomodar([],Resultado, [Lugares,Km, Tiempo,Presa]).
-% Función que elimina el primer elemento de la lista de lugares del
-% dijkstra
-% Sintaxis quitar(Dijkstra,Dijkstra sin el primer lugar)
+/*
+Descripción: Función que elimina el primer elemento de la lista de
+lugares del dijkstra
+Sintaxis quitar(Dijkstra,Dijkstra sin el primer lugar)
+Autor:Sebastián Moya
+*/
 quitar([],Lista,Lista).
 quitar([[_|Tail1]|Tail],Lista2):-quitar([],Lista2,[Tail1|Tail]).
-
-% Función que calcula el dijkstra por secciones, segun una lista de
-% lugares
-% Sintaxis(Lista de lugares en orden,lista con el Dijkstra para cada par
-% de ciudades).
+/*
+Descripción: Función que calcula el dijkstra por secciones, segun una
+lista de lugares
+Sintaxis(Lista de lugares en orden,lista con el Dijkstra para cada par
+de ciudades).
+Autor:Sebastián Moya
+*/
 calcularRuta([_|[]],Resultado,Resultado,false).
 calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1,false):- camino(Head,Elem,Dijkstra1),
   quitar(Dijkstra1,Dijkstra),
@@ -69,11 +104,13 @@ calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1,false):- camino(Head,Elem,D
 calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstra),
   calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
 calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
-
-% Función que toma una lista de lugares y calcula mejor ruta para
-% trnasitar, junto con su tiempo, km, y tiempo en presas
-% sintaxis(Lista de lugares ordenados, lista con cuatro elementos:
-% (lista de los lugares por visitar,km,tiempo total,tiempo en presa))
+/*
+Descripción: Función que toma una lista de lugares y calcula mejor
+ruta para trnasitar, junto con su tiempo, km, y tiempo en presas
+sintaxis: (Lista de lugares ordenados, lista con cuatro elementos:
+(lista de los lugares por visitar,km,tiempo total,tiempo en presa))
+Autor:Sebastián Moya
+*/
 
 mejorRuta([],Ruta,Ruta).
 mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
