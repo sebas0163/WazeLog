@@ -83,6 +83,16 @@ mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
 
 
 % ======================Algoritmo de Dijkstra=========================
+% Este algoritmo fue basado en el código de Colin Barker de la pagina
+%http://colin.barker.pagesperso-orange.fr/lpa/dijkstra.htm
+
+% funcion la cual llama a path para poder obtener una lista que contiene
+% el camino que se debe seguir para llegar a un punto de inicio a uno
+% final y el kilometraje total
+% eg. camino(cartago, cachi,X).
+camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
+
+
 %dijkstra(Vertex0, Ss) is true if Ss
 % is a list of structures s(Vertex, Dist, Path) containing the shortest
 % Path from Vertex0 to Vertex, the distance of the path being Dist. The
@@ -103,6 +113,7 @@ dijkstra_1([D|Ds], Ss0, Ss):-
   incr(Ds3, Distance, Ds4),
   merge(Ds1, Ds4, Ds5),
   dijkstra_1(Ds5, Ss1, Ss).
+
 % Funcion inicial del dijkstra la cual con el lugar inicial y el final
 % retorna la distancia y los puntos por los que se debe de pasar
 %e.g. path(penzance, london, Path, Dist)
@@ -110,11 +121,7 @@ path(Vertex0, Vertex, Path, Dist):-
   dijkstra(Vertex0, Ss),
   member(s(Vertex,Dist,Path), Ss), !.
 
-% funcion la cual llama a path para poder obtener una lista que contiene
-% el camino que se debe seguir para llegar a un punto de inicio a uno
-% final y el kilometraje total
-% eg. camino(cartago, cachi,X).
-camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
+
 
 % create(Start, Path, Edges) is true if Edges is a list of structures s(Vertex,
 %   Distance, Path) containing, for each Vertex accessible from Start, the
