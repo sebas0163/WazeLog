@@ -5,14 +5,14 @@ ciudad(guanacaste).
 ciudad(heredia).
 %ciudad(nombre de la ciudad)
 ciudad(cartago).
-ciudad(san_jose).
+ciudad(sanJose).
 ciudad(corralillo).
-ciudad(tres_rios).
-ciudad(musgo_verde).
+ciudad(tresRios).
+ciudad(musgoVerde).
 ciudad(pacayas).
 ciudad(cervantes).
 ciudad(paraiso).
-ciudad(juan_viñas).
+ciudad(juanViñas).
 ciudad(turrialba).
 ciudad(cachi).
 ciudad(orosi).

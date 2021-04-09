@@ -1,9 +1,12 @@
 :- module(bdyg, [ciudad/1,lugar/1,arco/3]).
 
-%----------base de datos y grafo-----------
+/*
+ Definicion de las ciudades
+ciudad(nombre de la ciudad).
+*/
 ciudad(guanacaste).
 ciudad(heredia).
-%ciudad(nombre de la ciudad)
+
 ciudad(cartago).
 ciudad(sanJose).
 ciudad(corralillo).
@@ -16,7 +19,10 @@ ciudad(juanViñas).
 ciudad(turrialba).
 ciudad(cachi).
 ciudad(orosi).
-%lugar(nombre del lugar)
+/*
+Definicion de los lugares
+lugar(nombre del lugar)
+*/
 lugar(restaurante).
 lugar(supermercado).
 lugar(tienda).
