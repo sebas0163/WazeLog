@@ -96,15 +96,17 @@ dijkstra_1([D|Ds], Ss0, Ss):-
   incr(Ds3, Distance, Ds4),
   merge(Ds1, Ds4, Ds5),
   dijkstra_1(Ds5, Ss1, Ss).
-
-% path(Vertex0, Vertex, Path, Dist) is true if Path is the shortest path from
-%   Vertex0 to Vertex, and the length of the path is Dist. The graph is defined
-%   by e/3.
-% e.g. path(penzance, london, Path, Dist)
+% Funcion inicial del dijkstra la cual con el lugar inicial y el final
+% retorna la distancia y los puntos por los que se debe de pasar
+%e.g. path(penzance, london, Path, Dist)
 path(Vertex0, Vertex, Path, Dist):-
   dijkstra(Vertex0, Ss),
   member(s(Vertex,Dist,Path), Ss), !.
 
+% funcion la cual llama a path para poder obtener una lista que contiene
+% el camino que se debe seguir para llegar a un punto de inicio a uno
+% final y el kilometraje total
+% eg. camino(cartago, cachi,X).
 camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
 
 % create(Start, Path, Edges) is true if Edges is a list of structures s(Vertex,
@@ -170,17 +172,11 @@ incr([s(V,D1,P)|Xs], Incr, [s(V,D2,P)|Ys]):-
   D2 is D1 + Incr,
   incr(Xs, Incr, Ys).
 
-% member(X, Ys) is true if the element X is contained in the list Ys.
-%member(X, [X|_]).
-%member(X, [_|Ys]):-member(X, Ys).
 
-% reverse(Xs, Ys) is true if Ys is the result of reversing the order of the
-%   elements in the list Xs.
-%reverse(Xs, Ys):-reverse_1(Xs, [], Ys).
-
-%reverse_1([], As, As).
-%reverse_1([X|Xs], As, Ys):-reverse_1(Xs, [X|As], Ys).
-
+% funcion que revisa si el punto X y el punto Y estan en el arco y
+% obtiene la distancia Z del arco
+% e.g e(tres rios, san jose, X). retornaria la distancia entre tres rios
+% y san jose
 e(X, Y, Z):-arco(X, Y, Z).
 e(X, Y, Z):-arco(Y, X, Z).
 
