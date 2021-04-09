@@ -70,6 +70,9 @@ pronombre([se|S],S).
 nombre(singular,[ubicacion|S],S).
 nombre(singular,[posicion|S],S).
 nombre(singular,[localizacion|S],S).
+nombre(singular,[destino|S],S).
+nombre(singular,[posicion|S],S).
+nombre(singular,[localizacion|S],S).
 
 ciudad([sanJose|S],S).
 ciudad([corralillo|S],S).

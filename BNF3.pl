@@ -1,10 +1,10 @@
 :- module(oracion, [oracion/2]).
 /*
- Basado en el libro: "El lenguaje de programacion PROLOG".
- Modificado por: Juan Pablo Carrillo
- Descripcion: Predicado que establece la estructura de la oracion segun
- las reglas establecidas. Retorna true si la estructura de la
- oracion cumple con lo establecido.
+ Basado en los ejemplos del libro "El lenguaje de programacion
+ PROLOG".
+ Modificado por: Juan Pablo Carrillo Descripcion: Predicado que
+ establece la estructura de la oracion segun las reglas establecidas.
+ Retorna true si la estructura de la oracion cumple con lo establecido.
  sintaxis: oracion(Lista con las palabras de la oracion a verificar,[])
 */
 oracion(S0,S):-sintagma_nominal(S0,S).
