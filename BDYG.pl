@@ -4,7 +4,6 @@
  Definicion de las ciudades
 ciudad(nombre de la ciudad).
 */
-
 ciudad(cartago).
 ciudad(sanJose).
 ciudad(corralillo).
@@ -45,9 +44,10 @@ lugar(piscina).
 lugar(ferreteria).
 lugar(automercado).
 lugar(cajero).
-
-% Aristas del Grafo
-% Con la forma (Punto de salida, Punto de llegada)
+/*
+Definicion de las aristas del Grafo
+sintaxis: arco(Punto de salida, Punto de llegada,Distancia)
+*/
 arco(tresRios, sanJose,8).
 arco(tresRios,pacayas,15).
 arco(sanJose,corralillo,22).

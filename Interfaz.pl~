@@ -1,6 +1,6 @@
 :-use_module(bnf3).
 :-use_module(bdyg).
-
+:-use_module(logica).
 /*
  Función principal.
  Unifica todos los hechos y reglas definidos para permitir la comunicacion entre el usuario y el sistema
@@ -12,7 +12,7 @@ wazelog():-
     write("Cuál es su destino? \n"),
     oracion_valida(Lugardestino),
     write("perfecto \n"),
-    write("¿Desea agregar un destino intermedio?\n"),
+    write("¿Desea agregar un destino intermedio?\nIndique si o no, por favor.\n"),
     read(Afirmacion),
     intermedio(Intermedios,[],Afirmacion),
     inversa([Lugardestino|Intermedios],Rutas1),
@@ -23,8 +23,9 @@ wazelog():-
     write("\n ¡Muchas gracias por usar WazeLog!").
 
 /*
+Autor:Juan Pablo Carrillo
 Descripcion: transforma un string en una lista de palabras.
-transformar(string, lista con las palabras del string)
+Sintaxis:transformar(string, lista con las palabras del string)
 */
 transformar(C, [H|T]) :-
   sub_atom(C, PosEspacio, _, _, ' '),
@@ -35,29 +36,43 @@ transformar(C, [H|T]) :-
 transformar(P, [P]).
 
 /*
- Descripcion: verifica si se menciona una ciudad en laoracion.
- verifica_ciudad(lista con las palabras de la oracion, ciudad mencionada en la oracion)
+ Autor:Juan Pablo Carrillo
+ Descripcion: verifica si se menciona una ciudad en la oracion
+ ingresada por el usuario.
+ Sintaxis: verifica_ciudad(lista con las palabras de la oracion, ciudad
+ mencionada en la oracion)
 */
-verifica_ciudad([Elem|_],Elem):-ciudad(Elem).
-verifica_ciudad([_|Resto],Elem):- verifica_ciudad(Resto, Elem).
+verifica_ciudad([Elem|_],Elem):-
+    ciudad(Elem).
+verifica_ciudad([_|Resto],Elem):-
+    verifica_ciudad(Resto, Elem).
 
 /*
-Descripcion: verifica si se menciona un lugar en la oracion
-verifica_lugar(lista con las palabras de la oracion, lugar mencionado en la oracion)
+ Autor:Juan Pablo Carrillo
+ Descripcion: verifica si se menciona un lugar en la oracion ingresada
+ por el usuario.
+ Sintaxis: verifica_lugar(lista con las palabras de la oracion,
+ lugar mencionado en la oracion)
 */
-verifica_lugar([Elem|_],Elem):-lugar(Elem).
-verifica_lugar([_|Resto],Elem):- verifica_lugar(Resto, Elem).
+verifica_lugar([Elem|_],Elem):-
+    lugar(Elem).
+verifica_lugar([_|Resto],Elem):-
+    verifica_lugar(Resto, Elem).
 
 /*
-Mensaje presentado cuando el usuario ingresa una oracion no mal estructurada o ssin sentido para el contexto del programa
+Mensaje presentado cuando el usuario ingresa una oracion mal estructurada o sin sentido para el contexto del programa
 */
-mensaje_error:-write("Disculpe, no se le entiende, podría ser mas especifico?\nRecuerde indicar solo un lugar a la vez e indicarlo de forma clara.\n Importante: Si ya indicó el lugar de forma clara entonces es que nuestro servicio no está disponible para la ubicación indicada \n Ingrese de nuevo el lugar:\n").
+mensaje_error:-write("Disculpe, no se le entiende, podría ser mas especifico?\n
+Recuerde indicar solo un lugar a la vez e indicarlo de forma clara.\n
+Importante: Si ya indicó el lugar de forma clara entonces es que nuestro servicio no está disponible para la ubicación indicada.\n
+Ingrese de nuevo el lugar: \n").
 
 
 /*
+  Autor:Juan Pablo Carrillo
   Descripción: recibe una oracion, verifica que esta sea valida y
   devuelve la ciudad que se identifique en la oración.
-  oracion_valida(Lugar identificado en la oracion)
+  Sintaxis: oracion_valida(Lugar identificado en la oracion)
   */
 oracion_valida(Lugar):-
     read(Oracion),
@@ -67,9 +82,11 @@ oracion_valida(Lugar):-
 oracion_valida(Lugar):-mensaje_error,oracion_valida(Lugar).
 
 /*
- Descripción:Se encarga de verificar que en la oracion dada haya
- como minimo un nombre de ciudad.
- Verificador_de_lugaryciudad(Lista de palabras,Ciudad encontrada en las palabras)
+ Autor:Juan Pablo Carrillo
+ Descripción: Se encarga de verificar que en la lista de palabras
+ de la oracion dada, se encuentre un nombre ciudad o lugar.
+ sintaxis: Verificador_de_lugaryciudad(Lista de palabras,Ciudad
+ encontrada en las palabras)
 */
 verificador_de_lugaryciudad(Lista,Ciudad):-
   verifica_ciudad(Lista,Ciudad),
@@ -91,7 +108,8 @@ intermedio(Lista,Lista1,no):-
 intermedio(Lista,Lista1,si):-
   write("¿Cual es su destino intermedio?\n"),
   oracion_valida(Lugar),
-  write("¿Algun otro destino intermedio que desee agregar?\n"),
+  repeat,
+  write("¿Desea agregar algún otro destino intermedio?\nIndique si o no, por favor.\n"),
   read(Afirmacion),
   intermedio(Lista,[Lugar|Lista1],Afirmacion).
 
