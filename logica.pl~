@@ -1,40 +1,16 @@
-% Aristas del Grafo
-% Con la forma (Punto de salida, Punto de llegada)
-arco(tresRios, sanJose,8).
-arco(tresRios,pacayas,15).
-arco(sanJose,corralillo,22).
-arco(sanJose,cartago,20).
-arco(corralillo,musgoVerde,6).
-arco(corralillo,sanJose, 22).
-arco(musgoVerde,corralillo,6).
-arco(musgoVerde,cartago,10).
-arco(cartago,musgoVerde,10).
-arco(cartago,paraiso,10).
-arco(cartago,sanJose,20).
-arco(cartago,tresRios,8).
-arco(cartago,pacayas,13).
-arco(paraiso,cervantes,4).
-arco(paraiso,orosi,8).
-arco(paraiso,cachi,10).
-arco(orosi,paraiso,8).
-arco(orosi,cachi,12).
-arco(cachi,paraiso,10).
-arco(cachi, orosi, 12).
-arco(cachi,cervantes,7).
-arco(cachi,turrialba,40).
-arco(cervantes,cachi,7).
-arco(cerbantes,juanViñas,5).
-arco(cervantes,pacayas,8).
-arco(juanViñas,turrialba,4).
-arco(turrialba,pacayas,18).
-arco(turrialba,cachi,40).
-arco(pacayas,cervantes,8).
-arco(pacayas,cartago,13).
-arco(pacayas,tresRios,15).
+:-module(logica,[inversa/2,mejorRuta/2]).
+:-use_module(bdyg).
+
 % Función encargada de añadir elementos a una lista.
 % Forma: (lista inicial, elemento que se desea añadir, lista obtenida).
 concatenar([],Lista,Lista).
 concatenar([Head|Lista1],Lista2, [Head|Lista3]):-concatenar(Lista1,Lista2,Lista3).
+%  Función que retorna la inversa de una lista
+%  Sintaxis (Lista, inversa de la lista).
+inversa(Lista1,Lista2):-inversa(Lista1,Lista2,[]).
+inversa([],Lista,Lista).
+inversa([Head|Tail],Lista2,Nueva):- inversa(Tail, Lista2, [Head|Nueva]).
+
 %Función que toma el tiempo de viaje de la lista dada por el grafo
 %Sintaxis horaTransito(Lista de lugares, km, tiempo, presa)
 horaTransito([],Tiempo,Tiempo).
@@ -76,10 +52,41 @@ sumaKm([Head|Tail],Total):-kilometraje(Head,Km), sumaKm(Tail, Suma),Total is Sum
 acomodar([],Ruta,Ruta).
 acomodar(Dijkstra,Resultado):-ordenarLugares(Dijkstra,Lugares),sumaKm(Dijkstra,Km),sumarTiempo(Dijkstra, Tiempo),sumarPresa(Dijkstra,Presa),
     acomodar([],Resultado, [Lugares,Km, Tiempo,Presa]).
-% dijkstra(Vertex0, Ss) is true if Ss is a list of structures s(Vertex, Dist,
-%   Path) containing the shortest Path from Vertex0 to Vertex, the distance of
-%   the path being Dist.  The graph is defined by e/3.
-% e.g. dijkstra(penzance, Ss)
+% Función que elimina el primer elemento de la lista de lugares del
+% dijkstra
+% Sintaxis quitar(Dijkstra,Dijkstra sin el primer lugar)
+quitar([],Lista,Lista).
+quitar([[_|Tail1]|Tail],Lista2):-quitar([],Lista2,[Tail1|Tail]).
+
+% Función que calcula el dijkstra por secciones, segun una lista de
+% lugares
+% Sintaxis(Lista de lugares en orden,lista con el Dijkstra para cada par
+% de ciudades).
+calcularRuta([_|[]],Resultado,Resultado,false).
+calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1,false):- camino(Head,Elem,Dijkstra1),
+  quitar(Dijkstra1,Dijkstra),
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
+calcularRuta([Head|[Elem|Tail]],Resultado,Resultado1):- camino(Head,Elem,Dijkstra),
+  calcularRuta([Elem|Tail],Resultado,[Dijkstra|Resultado1],false).
+calcularRuta(Lugares,Resultado):-calcularRuta(Lugares,Resultado,[]).
+
+% Función que toma una lista de lugares y calcula mejor ruta para
+% trnasitar, junto con su tiempo, km, y tiempo en presas
+% sintaxis(Lista de lugares ordenados, lista con cuatro elementos:
+% (lista de los lugares por visitar,km,tiempo total,tiempo en presa))
+
+mejorRuta([],Ruta,Ruta).
+mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
+  inversa(Dijkstra1,Dijkstra),
+  acomodar(Dijkstra,Resultado),
+  mejorRuta([],Ruta,Resultado).
+
+
+% ======================Algoritmo de Dijkstra=========================
+%dijkstra(Vertex0, Ss) is true if Ss
+% is a list of structures s(Vertex, Dist, Path) containing the shortest
+% Path from Vertex0 to Vertex, the distance of the path being Dist. The
+% graph is defined by e/3. e.g. dijkstra(penzance, Ss)
 dijkstra(Vertex, Ss):-
   create(Vertex, [Vertex], Ds),
   dijkstra_1(Ds, [s(Vertex,0,[])], Ss).
@@ -181,7 +188,6 @@ incr([s(V,D1,P)|Xs], Incr, [s(V,D2,P)|Ys]):-
 %reverse_1([], As, As).
 %reverse_1([X|Xs], As, Ys):-reverse_1(Xs, [X|As], Ys).
 
-e(X, Y, Z):-dist(X, Y, Z).
-e(X, Y, Z):-dist(Y, X, Z).
+e(X, Y, Z):-arco(X, Y, Z).
 
 
