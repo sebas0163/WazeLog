@@ -126,7 +126,7 @@ mejorRuta(Lugares,Ruta):-calcularRuta(Lugares,Dijkstra1),
 % funcion la cual llama a path para poder obtener una lista que contiene
 % el camino que se debe seguir para llegar a un punto de inicio a uno
 % final y el kilometraje total
-% eg. camino(cartago, cachi,X).
+% Forma: camino(cartago, cachi,X).
 camino(Inicio,Fin,Respuesta):-path(Inicio,Fin,Path,Dist),Respuesta=[Path,Dist].
 
 
@@ -153,7 +153,7 @@ dijkstra_1([D|Ds], Ss0, Ss):-
 
 % Funcion inicial del dijkstra la cual con el lugar inicial y el final
 % retorna la distancia y los puntos por los que se debe de pasar
-%e.g. path(penzance, london, Path, Dist)
+% Forma: path(penzance, london, Path, Dist)
 path(Vertex0, Vertex, Path, Dist):-
   dijkstra(Vertex0, Ss),
   member(s(Vertex,Dist,Path), Ss), !.
